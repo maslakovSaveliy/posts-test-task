@@ -1,10 +1,13 @@
+import React, { useState, FC } from "react";
 import { Grid, Paper, Typography } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import React, { useState } from "react";
 
-type Props = {};
+interface Props {
+  label: string;
+  body: string;
+}
 
-const PostItem = (props: Props) => {
+const PostItem: FC<Props> = ({ label, body }) => {
   const [state, setState] = useState<boolean>(false);
   return (
     <Grid width={"100%"}>
@@ -24,19 +27,20 @@ const PostItem = (props: Props) => {
           container
           justifyContent={"space-between"}
         >
-          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-            Lorem ipsum
+          <Typography variant="body1" sx={{ fontWeight: "bold", width: "70%" }}>
+            {label}
           </Typography>
           <FavoriteIcon
-            sx={{ cursor: "pointer", color: state ? "red" : "gray" }}
+            sx={{
+              cursor: "pointer",
+              color: state ? "red" : "gray",
+              width: "max-content",
+            }}
             onClick={() => setState((state) => !state)}
           />
         </Grid>
         <Typography width={"100%"} variant="body2">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore sequi
-          minus distinctio optio placeat explicabo iure cupiditate harum eaque
-          vel laborum, suscipit quasi inventore perspiciatis, vitae earum!
-          Exercitationem, voluptatem fuga.
+          {body}
         </Typography>
       </Paper>
     </Grid>

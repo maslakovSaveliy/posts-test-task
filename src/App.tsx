@@ -1,49 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import PostItem from "./components/PostItem";
 import PostList from "./components/PostList";
-import {
-  TextField,
-  Grid,
-  useMediaQuery,
-  createTheme,
-  ThemeProvider,
-} from "@mui/material";
-import { outlinedInputClasses } from "@mui/material/OutlinedInput";
+import { Grid, useMediaQuery } from "@mui/material";
+import { IPost } from "./models/IPost";
+import { useFetching } from "./hooks/useFetching";
+import Service from "./API/Service";
+import Search from "./components/UI/Search";
+import { useDebounce } from "./hooks/useDebounce";
 
 function App() {
   const matches = useMediaQuery("(max-width:600px)");
-  const theme = createTheme({
-    components: {
-      MuiTextField: {
-        styleOverrides: {
-          root: {
-            "--TextField-brandBorderColor": "#E0E3E7",
-            "--TextField-brandBorderHoverColor": "#B2BAC2",
-            "--TextField-brandBorderFocusedColor": "#6F7E8C",
-            "& label.Mui-focused": {
-              color: "var(--TextField-brandBorderFocusedColor)",
-            },
-          },
-        },
-      },
-      MuiOutlinedInput: {
-        styleOverrides: {
-          notchedOutline: {
-            borderColor: "var(--TextField-brandBorderColor)",
-          },
-          root: {
-            [`&:hover .${outlinedInputClasses.notchedOutline}`]: {
-              borderColor: "var(--TextField-brandBorderHoverColor)",
-            },
-            [`&.Mui-focused .${outlinedInputClasses.notchedOutline}`]: {
-              borderColor: "var(--TextField-brandBorderFocusedColor)",
-            },
-          },
-        },
-      },
-    },
+
+  const [posts, setPosts] = useState<IPost[]>([]);
+  const [search, setSearch] = useState<string>("");
+
+  const { fetching, isLoading } = useFetching(async () => {
+    const response = await Service.getPosts();
+    setPosts(response);
   });
+
+  const filteredPosts = useDebounce(search, posts, 500);
+
+  useEffect(() => {
+    fetching();
+  }, []);
+
   return (
     <div className="App">
       <Grid
@@ -53,22 +34,8 @@ function App() {
         width={matches ? "100%" : "45%"}
         gap={2}
       >
-        <Grid width={matches ? "100%" : "60%"}>
-          <ThemeProvider theme={theme}>
-            <TextField
-              fullWidth
-              size="small"
-              variant="outlined"
-              label="search"
-            />
-          </ThemeProvider>
-        </Grid>
-        <PostList>
-          <PostItem />
-          <PostItem />
-          <PostItem />
-          <PostItem />
-        </PostList>
+        <Search matches={matches} value={search} setValue={setSearch} />
+        <PostList posts={filteredPosts} isLoading={isLoading} />
       </Grid>
     </div>
   );
