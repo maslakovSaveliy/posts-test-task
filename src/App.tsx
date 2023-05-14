@@ -60,6 +60,7 @@ function App() {
           isLoading={isLoading}
           favorites={favorites}
           isFavoritesPosts={isFavoritesPosts}
+          setFavorites={setFavorites}
         />
       </Grid>
     </div>

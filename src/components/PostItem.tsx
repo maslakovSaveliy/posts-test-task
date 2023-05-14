@@ -10,9 +10,16 @@ interface Props {
   body: string;
   favorites: IPost[];
   postItem: IPost;
+  setFavorites: React.Dispatch<React.SetStateAction<IPost[]>>;
 }
 
-const PostItem: FC<Props> = ({ label, body, favorites, postItem }) => {
+const PostItem: FC<Props> = ({
+  label,
+  body,
+  favorites,
+  postItem,
+  setFavorites,
+}) => {
   const [state, setState] = useState<boolean>(
     favorites.find((item) => item.id === postItem.id) ? true : false
   );
@@ -27,7 +34,14 @@ const PostItem: FC<Props> = ({ label, body, favorites, postItem }) => {
     }
   };
 
-  useEffect(() => {}, []);
+  const { fetching } = useFetching(async () => {
+    const responseFavorites = await Service.getFavorites();
+    setFavorites(responseFavorites);
+  });
+
+  useEffect(() => {
+    fetching();
+  }, [state]);
   return (
     <Grid width={"100%"}>
       <Paper
