@@ -1,14 +1,33 @@
-import React, { useState, FC } from "react";
-import { Grid, Paper, Typography } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import React, { useState, FC, useEffect } from "react";
+import { Grid, Paper, Typography, Checkbox } from "@mui/material";
+import { FavoriteBorder, Favorite } from "@mui/icons-material";
+import { IPost } from "../models/IPost";
+import Service from "../API/Service";
+import { useFetching } from "../hooks/useFetching";
 
 interface Props {
   label: string;
   body: string;
+  favorites: IPost[];
+  postItem: IPost;
 }
 
-const PostItem: FC<Props> = ({ label, body }) => {
-  const [state, setState] = useState<boolean>(false);
+const PostItem: FC<Props> = ({ label, body, favorites, postItem }) => {
+  const [state, setState] = useState<boolean>(
+    favorites.find((item) => item.id === postItem.id) ? true : false
+  );
+
+  const handleChange = async () => {
+    if (state) {
+      await Service.removeFavorite(postItem);
+      setState(false);
+    } else {
+      await Service.addFavorite(postItem);
+      setState(true);
+    }
+  };
+
+  useEffect(() => {}, []);
   return (
     <Grid width={"100%"}>
       <Paper
@@ -30,13 +49,12 @@ const PostItem: FC<Props> = ({ label, body }) => {
           <Typography variant="body1" sx={{ fontWeight: "bold", width: "70%" }}>
             {label}
           </Typography>
-          <FavoriteIcon
-            sx={{
-              cursor: "pointer",
-              color: state ? "red" : "gray",
-              width: "max-content",
-            }}
-            onClick={() => setState((state) => !state)}
+          <Checkbox
+            checked={state}
+            onChange={handleChange}
+            icon={<FavoriteBorder />}
+            checkedIcon={<Favorite />}
+            color="error"
           />
         </Grid>
         <Typography width={"100%"} variant="body2">
