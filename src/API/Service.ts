@@ -23,7 +23,7 @@ export default class Service {
     });
   }
   static async removeFavorite(post: IPost) {
-    await fetch("http://localhost:3001/favorites/" + post.id, {
+    await fetch("http://localhost:3001/favorites2/" + post.id, {
       method: "DELETE",
     });
   }
