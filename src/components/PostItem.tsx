@@ -26,22 +26,17 @@ const PostItem: FC<Props> = ({
 
   const handleChange = async () => {
     if (state) {
-      await Service.removeFavorite(postItem);
+      await Service.removeFavorite(postItem).then(() => {
+      setFavorites(state => state.filter((filterItem) => filterItem.id !== postItem.id))
       setState(false);
+    });
     } else {
+      setFavorites(state => [...state, postItem])
       await Service.addFavorite(postItem);
       setState(true);
     }
   };
 
-  const { fetching } = useFetching(async () => {
-    const responseFavorites = await Service.getFavorites();
-    setFavorites(responseFavorites);
-  });
-
-  useEffect(() => {
-    fetching();
-  }, [state]);
   return (
     <Grid width={"100%"}>
       <Paper

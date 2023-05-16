@@ -31,27 +31,11 @@ function App() {
 
   return (
     <div className="App">
-      <Grid
-        container
-        display={"flex"}
-        direction={"column"}
-        width={matches ? "100%" : "45%"}
-        gap={2}
-      >
-        <Grid
-          container
-          display={"flex"}
-          direction={"row"}
-          justifyContent={"space-between"}
-        >
+      <Grid container display={"flex"} direction={"column"} width={matches ? "100%" : "45%"} gap={2}>
+        <Grid container display={"flex"} direction={"row"} justifyContent={"space-between"}>
           <Search matches={matches} value={search} setValue={setSearch} />
           <FormControlLabel
-            control={
-              <Checkbox
-                value={isFavoritesPosts}
-                onChange={() => setIsFavoritesPosts(!isFavoritesPosts)}
-              />
-            }
+            control={<Checkbox value={isFavoritesPosts} onChange={() => setIsFavoritesPosts(!isFavoritesPosts)} />}
             label="Favorites"
           />
         </Grid>
